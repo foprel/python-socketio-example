@@ -3,16 +3,7 @@ const stopRecording = document.getElementById("stop")
 const sio = io();
 
 const config = {
-    audio: {
-        autoGainControl: '',
-        channelCount: '',
-        echoCancellation: '',
-        latency: '',
-        noiseSuppression: '',
-        sampleRate: '',
-        sampleSize: '',
-        volume: ''
-    }
+    audio: true
 };
 
 // connect event
@@ -27,8 +18,10 @@ startRecording.onclick = () => {
         const recorder = new MediaRecorder(stream);
             recorder.ondataavailable = (event) => {
                 console.log(event.data);
-        };
-        recorder.start(1000);
+                sio.emit("write_stream", event.data);
+                sio.emit("start_stream");
+            };
+        recorder.start(2.5);
         console.log("recording started");
     
         stopRecording.disabled = false;
